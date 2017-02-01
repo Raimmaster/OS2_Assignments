@@ -1,13 +1,14 @@
 package main
 
 import (
-    "log"
+    "os"
     "fmt"
+    "Disk"
     "bufio"
     "strconv"
 )
 
-func showMenuSelection(){
+func showMenuSelection(selectedOption int, basicFsManager *Disk.BasicFsManager){
     switch selectedOption {
         case 1:
             basicFsManager.CreateDiskScreen()
@@ -34,18 +35,18 @@ func showMenuSelection(){
 }
 
 func main() {
-    basicFsManager, errDiskManager := new (BasicFsManager)
+    basicFsManager := Disk.CreateBasicFsManager()
     for {
-        menuOptions := "***BASIC FS***\n1. Create disk.\n2. Mount or dismount disk.
-            \n3. Write block.\n4. Read block.
-            \n5. Allocate block. \n6. Liberar block. 
-            \n7.Imprimir bloques y espacio libre."
+        menuOptions := "***BASIC FS***\n1. Create disk.\n2. Mount or dismount disk."
+        menuOptions += "\n3. Write block.\n4. Read block."
+        menuOptions += "\n5. Allocate block. \n6. Liberar block." 
+        menuOptions += "\n7.Imprimir bloques y espacio libre."
         fmt.Println(menuOptions)
         fmt.Print("Your choice: ")
         reader := bufio.NewReader(os.Stdin)
-        optionString, bufErr := reader.ReadString('\n')
-        selectedOption, err := strconv.Atoi(optionString)
-
-        showMenuSelection(selectedOption)
+        optionString, _ := reader.ReadString('\n')
+        selectedOption, _ := strconv.Atoi(optionString)
+        fmt.Printf("Option: %d", selectedOption)
+        showMenuSelection(selectedOption, basicFsManager)
     }    
 }

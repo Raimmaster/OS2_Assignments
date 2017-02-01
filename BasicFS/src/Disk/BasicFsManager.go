@@ -1,14 +1,22 @@
-package main
+package Disk
+
+import(
+	"os"
+	"fmt"
+	"log"
+	"bufio"
+	"strconv"
+)
 
 type BasicFsManager struct{
-	diskManager DiskManager
+	diskManager *DiskManager
 	blockSizeOptions [3]int
-	reader *Reader
+	reader *bufio.Reader
 }
 
 func CreateBasicFsManager() *BasicFsManager{
 	bfs := new (BasicFsManager)
-	bfs.diskManager = Disk.CreateDiskManager()
+	bfs.diskManager = CreateDiskManager()
 	bfs.blockSizeOptions[0] = 256
 	bfs.blockSizeOptions[1] = 512
 	bfs.blockSizeOptions[2] = 1024
@@ -17,8 +25,8 @@ func CreateBasicFsManager() *BasicFsManager{
 	return bfs
 }
 
-func (bfs* BasicFsManager) isBlockSizeAllowed(size int) true{
-	for index, value := range bfs.blockSizeOptions {
+func (bfs* BasicFsManager) isBlockSizeAllowed(size int) bool{
+	for _, value := range bfs.blockSizeOptions {
 		if size == value {
 			return true
 		}
@@ -41,11 +49,11 @@ func (bfs* BasicFsManager) CreateDiskScreen() {
 		return
 	}
 
-	if diskSize < bfs.blockSize[1] {
-		fmt.Printf("Disk size must be a minimum of %d bytes.", bfs.blockSize[1])
+	if diskSize < bfs.blockSizeOptions[1] {
+		fmt.Printf("Disk size must be a minimum of %d bytes.", bfs.blockSizeOptions[1])
 	}
 
-	diskSize = Utils.RoundToPowerOfTwo(diskSize)
+	diskSize = RoundToPowerOfTwo(diskSize)
 
 	fmt.Print("Block size (256, 512 or 1024 bytes): ")
 	blockSizeString, _ := bfs.reader.ReadString('\n')
@@ -59,7 +67,7 @@ func (bfs* BasicFsManager) CreateDiskScreen() {
 
 	if !(bfs.isBlockSizeAllowed(blockSize)) {
 		fmt.Println("Block size is not allowed. It must be either %d, %d, or %d.", 
-			bsf.blockSize[0], bsf.blockSize[1], bsf.blockSize[2])
+			bfs.blockSizeOptions[0], bfs.blockSizeOptions[1], bfs.blockSizeOptions[2])
 	}
 
 	bfs.diskManager.CreateDisk(diskName, diskSize, blockSize)
