@@ -99,6 +99,14 @@ func (bfs *BasicFsManager) MountOrDismountDiskScreen(){
 	}
 }
 
+func (bfs *BasicFsManager) PrintBlocksInfoScreen() {
+	if(bfs.diskManager.HasMountedDisk()){
+		bfs.diskManager.PrintDiskInfo()
+	}else {
+		fmt.Println("No disk is mounted. Mount one to print its info.")
+	}
+}
+
 func ListFiles() string{
 	var files_names string
 	files_names = " \n"

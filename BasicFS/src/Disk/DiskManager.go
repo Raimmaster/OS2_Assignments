@@ -11,6 +11,7 @@ import(
 const BEGINNING_OF_FILE int = 0
 const DISK_DIR string = "./disks/"
 const POINTER_SIZE int64 = 8
+const METADATA_SIZE int64 = 56
 
 type DiskManager struct {
 	mountedDisk *Disk
@@ -134,8 +135,18 @@ func (diskManager *DiskManager) MountDisk(diskName string) {
 		log.Printf("Failed to mount disk. %s", err)
 		return
 	}
-
+	byteSliceOfMeta := make([]byte, METADATA_SIZE)
+	diskManager.ReadBlock(0, 0, byteSliceOfMeta)
+	diskManager.mountedDisk.obtainMetaFromDisk(byteSliceOfMeta)
 	log.Printf("Disk %s mounted", diskName)
+}
+
+func (diskManager *DiskManager) PrintDiskInfo() {
+	fmt.Printf("Disk Name: %s\n", diskManager.mountedDisk.diskName)
+	fmt.Printf("Disk Size: %d\n", diskManager.mountedDisk.diskSize)
+	fmt.Printf("Free disk space: %d\n", diskManager.mountedDisk.freeSpace)
+	fmt.Printf("Block Amount: %d\n", diskManager.mountedDisk.blockQuantity)
+	fmt.Printf("Free blocks: %d\n", diskManager.mountedDisk.freeBlocks)
 }
 
 func (diskManager *DiskManager) UnmountDisk(diskName string) {
@@ -165,7 +176,11 @@ func (disk *Disk) Write(buffer []byte, diskFile *os.File){
 }
 
 func (disk *Disk) Read(buffer []byte, diskFile *os.File){
-
+	_, err := diskFile.Read(buffer)
+	if err != nil {
+		log.Printf("Failed to read: %s", err)
+		return
+	}
 }
 
 func (diskManager *DiskManager) WriteBlock(blockNumber int64, blockOffset int64, buffer []byte) {

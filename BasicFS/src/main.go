@@ -22,8 +22,10 @@ func showMenuSelection(selectedOption int, basicFsManager *Disk.BasicFsManager){
             break;
         case 4:
             //basicFsManager.FreeBlockScreen()
-        case 5:
-            //basicFsManager.PrintBlocksInfo()
+            break;
+          case 5:
+            basicFsManager.PrintBlocksInfoScreen()
+            break;
         default:
             fmt.Println("Wrong option selected.")
         }
@@ -33,8 +35,8 @@ func main() {
     basicFsManager := Disk.CreateBasicFsManager()
     for {
         menuOptions := "\n***BASIC FS***\n1. Create disk.\n2. Mount or dismount disk."
-        menuOptions += "\n3. Allocate block. \n4. Liberar block."
-        menuOptions += "\n5.Imprimir bloques y espacio libre."
+        menuOptions += "\n3. Allocate block. \n4. Free block."
+        menuOptions += "\n5. Print disk info."
         fmt.Println(menuOptions)
         fmt.Print("Your choice: ")
         reader := bufio.NewReader(os.Stdin)
