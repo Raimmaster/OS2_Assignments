@@ -187,7 +187,40 @@ func (diskManager *DiskManager) AllocateBlock() {
 	newBlockSlice = make([]byte, POINTER_SIZE)
 	binary.PutVarint(newBlockSlice[0:POINTER_SIZE], diskManager.mountedDisk.freeSpace)
 	diskManager.WriteBlock(0, FSPACE_POINTER, newBlockSlice)
+}
 
+func (diskManager *DiskManager) FreeBlock(blockIndex int){
+	pastTailBlock := diskManager.mountedDisk.tailBlock
+	if diskManager.mountedDisk.blockQuantity == diskManager.mountedDisk.freeBlocks - 1{
+		fmt.Println("All working blocks are free.")
+		return
+	}
+
+	diskManager.mountedDisk.tailBlock = int64(blockIndex)
+	//updating tail in file
+	newBlockSlice := make([]byte, POINTER_SIZE)
+	binary.PutVarint(newBlockSlice[0:POINTER_SIZE], diskManager.mountedDisk.tailBlock)
+	diskManager.WriteBlock(0, TBLOCK_POINTER, newBlockSlice)
+
+	var BLOCK_POINTER_OFFSET int64 = diskManager.mountedDisk.blockSize - POINTER_SIZE
+
+	//setting new pointer for past tail block
+	newBlockSlice = make([]byte, POINTER_SIZE)
+	binary.PutVarint(newBlockSlice[0:POINTER_SIZE], int64(blockIndex))//block being freed
+	diskManager.WriteBlock(pastTailBlock, BLOCK_POINTER_OFFSET, newBlockSlice)
+
+
+		//updating free blocks
+		diskManager.mountedDisk.freeBlocks++
+		newBlockSlice = make([]byte, POINTER_SIZE)
+		binary.PutVarint(newBlockSlice[0:POINTER_SIZE], diskManager.mountedDisk.freeBlocks)
+		diskManager.WriteBlock(0, FBLOCKS_POINTER, newBlockSlice)
+
+		//updating free space
+		diskManager.mountedDisk.freeSpace += diskManager.mountedDisk.blockSize
+		newBlockSlice = make([]byte, POINTER_SIZE)
+		binary.PutVarint(newBlockSlice[0:POINTER_SIZE], diskManager.mountedDisk.freeSpace)
+		diskManager.WriteBlock(0, FSPACE_POINTER, newBlockSlice)
 }
 
 func (diskManager *DiskManager) PrintDiskInfo() {

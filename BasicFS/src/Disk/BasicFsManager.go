@@ -112,6 +112,17 @@ func (bfs *BasicFsManager) AllocateBlockScreen() {
 	bfs.diskManager.AllocateBlock()
 }
 
+func (bfs *BasicFsManager) FreeBlockScreen(){
+	blockQuant := bfs.diskManager.mountedDisk.blockQuantity
+	fmt.Printf("Block quantity: %d\n", blockQuant)
+	fmt.Printf("Which block from 1 to %d will you free? ", (blockQuant - 1))
+	blockToBeFreedString, _ := bfs.reader.ReadString('\n')
+	blockToBeFreedString = strings.TrimSpace(string(blockToBeFreedString))
+
+	blockToBeFreed, _ := strconv.Atoi(blockToBeFreedString)
+	bfs.diskManager.FreeBlock(blockToBeFreed)
+}
+
 func ListFiles() string{
 	var files_names string
 	files_names = " \n"

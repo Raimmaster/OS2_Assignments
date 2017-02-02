@@ -21,7 +21,7 @@ func showMenuSelection(selectedOption int, basicFsManager *Disk.BasicFsManager){
             basicFsManager.AllocateBlockScreen()
             break;
         case 4:
-            //basicFsManager.FreeBlockScreen()
+            basicFsManager.FreeBlockScreen()
             break;
           case 5:
             basicFsManager.PrintBlocksInfoScreen()
