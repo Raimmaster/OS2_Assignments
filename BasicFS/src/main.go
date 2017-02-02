@@ -18,7 +18,7 @@ func showMenuSelection(selectedOption int, basicFsManager *Disk.BasicFsManager){
             basicFsManager.MountOrDismountDiskScreen()
             break;
         case 3:
-            //basicFsManager.AllocateBlockScreen()
+            basicFsManager.AllocateBlockScreen()
             break;
         case 4:
             //basicFsManager.FreeBlockScreen()
@@ -42,6 +42,7 @@ func main() {
         reader := bufio.NewReader(os.Stdin)
         optionString, _ := reader.ReadString('\n')
         selectedOption, _ := strconv.Atoi(strings.TrimSpace(string(optionString)))
+        fmt.Printf("\n\n\n")
         showMenuSelection(selectedOption, basicFsManager)
     }
 }

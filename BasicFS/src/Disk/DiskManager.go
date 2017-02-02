@@ -12,6 +12,16 @@ const BEGINNING_OF_FILE int = 0
 const DISK_DIR string = "./disks/"
 const POINTER_SIZE int64 = 8
 const METADATA_SIZE int64 = 56
+const STRING_POINTER_SIZE int64 = 16
+
+const (
+	BS_POINTER = 8
+	FSPACE_POINTER = 16
+	BQUANTITY_POINTER = 24
+	FBLOCKS_POINTER = 32
+	HBLOCK_POINTER = 40
+	TBLOCK_POINTER = 48
+)
 
 type DiskManager struct {
 	mountedDisk *Disk
@@ -36,7 +46,6 @@ func CreateDiskManager() *DiskManager {
 	return dMang
 }
 
-const STRING_POINTER_SIZE int64 = 16
 
 func (disk *Disk) toBytesArray() []byte{
 	sizeOfDisk := int64(unsafe.Sizeof(*disk)) - STRING_POINTER_SIZE
@@ -54,7 +63,7 @@ func (disk *Disk) toBytesArray() []byte{
 }
 
 func (disk *Disk) obtainMetaFromDisk(byteSlice []byte){
-	disk.diskSize, _ = binary.Varint(byteSlice[0:8])
+	disk.diskSize, _ = binary.Varint(byteSlice[0:POINTER_SIZE])
 	disk.blockSize, _ = binary.Varint(byteSlice[8:16])
 	disk.freeSpace, _ =  binary.Varint(byteSlice[16:24])
 	disk.blockQuantity, _ = binary.Varint(byteSlice[24:32])
@@ -141,13 +150,56 @@ func (diskManager *DiskManager) MountDisk(diskName string) {
 	log.Printf("Disk %s mounted", diskName)
 }
 
+func (diskManager *DiskManager) AllocateBlock() {
+	blockToBeAllocated := diskManager.mountedDisk.headBlock
+
+	if(blockToBeAllocated < 0){
+		fmt.Printf("There are no more free blocks.")
+		return
+	}
+
+	var BLOCK_POINTER_OFFSET int64 = diskManager.mountedDisk.blockSize - POINTER_SIZE
+
+	newBlockSlice := make([]byte, POINTER_SIZE)
+	diskManager.ReadBlock(blockToBeAllocated, BLOCK_POINTER_OFFSET, newBlockSlice)
+	diskManager.mountedDisk.headBlock, _ =  binary.Varint(newBlockSlice[0:POINTER_SIZE])
+
+	fmt.Printf("Head obtained: %d \n", diskManager.mountedDisk.headBlock)
+
+	//setting nil pointer for allocated block
+	newBlockSlice = make([]byte, POINTER_SIZE)
+	binary.PutVarint(newBlockSlice[0:POINTER_SIZE], (-1))
+	diskManager.WriteBlock(blockToBeAllocated, BLOCK_POINTER_OFFSET, newBlockSlice)
+
+	//updating head block
+	newBlockSlice = make([]byte, POINTER_SIZE)
+	binary.PutVarint(newBlockSlice[0:POINTER_SIZE], diskManager.mountedDisk.headBlock)
+	diskManager.WriteBlock(0, HBLOCK_POINTER, newBlockSlice)
+
+	//updating free blocks
+	diskManager.mountedDisk.freeBlocks--
+	newBlockSlice = make([]byte, POINTER_SIZE)
+	binary.PutVarint(newBlockSlice[0:POINTER_SIZE], diskManager.mountedDisk.freeBlocks)
+	diskManager.WriteBlock(0, FBLOCKS_POINTER, newBlockSlice)
+
+	//updating free space
+	diskManager.mountedDisk.freeSpace -= diskManager.mountedDisk.blockSize
+	newBlockSlice = make([]byte, POINTER_SIZE)
+	binary.PutVarint(newBlockSlice[0:POINTER_SIZE], diskManager.mountedDisk.freeSpace)
+	diskManager.WriteBlock(0, FSPACE_POINTER, newBlockSlice)
+
+}
+
 func (diskManager *DiskManager) PrintDiskInfo() {
 	fmt.Printf("Disk Name: %s\n", diskManager.mountedDisk.diskName)
 	fmt.Printf("Disk Size: %d\n", diskManager.mountedDisk.diskSize)
 	fmt.Printf("Free disk space: %d\n", diskManager.mountedDisk.freeSpace)
 	fmt.Printf("Block Amount: %d\n", diskManager.mountedDisk.blockQuantity)
 	fmt.Printf("Free blocks: %d\n", diskManager.mountedDisk.freeBlocks)
+	fmt.Printf("Head block: %d\n", diskManager.mountedDisk.headBlock)
+	fmt.Printf("Tail block: %d\n", diskManager.mountedDisk.tailBlock)
 }
+
 
 func (diskManager *DiskManager) UnmountDisk(diskName string) {
 	diskManager.mountedDFile.Close()

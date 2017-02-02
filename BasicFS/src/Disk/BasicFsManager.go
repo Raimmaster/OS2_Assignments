@@ -107,6 +107,11 @@ func (bfs *BasicFsManager) PrintBlocksInfoScreen() {
 	}
 }
 
+func (bfs *BasicFsManager) AllocateBlockScreen() {
+	fmt.Printf("Allocating block from disk %s\n", bfs.diskManager.MountedDiskName)
+	bfs.diskManager.AllocateBlock()
+}
+
 func ListFiles() string{
 	var files_names string
 	files_names = " \n"
