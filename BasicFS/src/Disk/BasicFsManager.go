@@ -78,21 +78,40 @@ func (bfs *BasicFsManager) CreateDiskScreen() {
 }
 
 func (bfs *BasicFsManager) MountOrDismountDiskScreen(){
+	canMountDisk := true
+	if bfs.diskManager.HasMountedDisk() {
+		fmt.Printf("Cannot mount another disk; disk %s is already mounted. Dismount to mount another.\n", bfs.diskManager.MountedDiskName)
+		canMountDisk = false
+	}
 
+	fmt.Print("List disks: ")
+	fmt.Println(ListFiles())
+	fmt.Print("Type disk name to mount if none is mounted, or unmount if mounted: ")
+	diskName, _ := bfs.reader.ReadString('\n')
+	diskName = strings.TrimSpace(string(diskName))
+	if canMountDisk{
+		bfs.diskManager.MountDisk(diskName)
+		return
+	}
+
+	if diskName == bfs.diskManager.MountedDiskName {
+		bfs.diskManager.UnmountDisk(diskName)
+	}
 }
 
-func (bfs *BasicFsManager) ListFiles() string{//ls
+func ListFiles() string{
 	var files_names string
 	files_names = " \n"
 
-	files, err := ioutil.ReadDir(".")
+	files, err := ioutil.ReadDir("./disks")
 
 	if err != nil{
+		fmt.Println("ERROR!")
 		return " \n"
 	}
 
 	for _, file := range files {
-		files_names += file.Name() + "\n"
+		files_names += "* " + file.Name() + "\n"
 	}
 
 	return files_names

@@ -14,6 +14,8 @@ const POINTER_SIZE int64 = 8
 
 type DiskManager struct {
 	mountedDisk *Disk
+	mountedDFile *os.File
+	MountedDiskName string
 }
 
 type Disk struct {
@@ -83,6 +85,24 @@ func setDiskFilePointer(diskFile *os.File){
 	diskFile.Seek(offset, whence)
 }
 
+func (diskManager *DiskManager) initBlockList(disk *Disk, diskPath string) {
+	diskFile, _ := os.OpenFile(diskPath, os.O_WRONLY, 0666)
+	defer diskFile.Close()
+	setDiskFilePointer(diskFile)
+	diskManager.mountedDisk = disk
+	var BLOCK_POINTER_OFFSET int64 = disk.blockSize - POINTER_SIZE
+	var blockIndex int64
+	pointerOfNextBlock := make([]byte, POINTER_SIZE)
+	for blockIndex = 1; blockIndex < disk.blockQuantity - 1; blockIndex++ {
+		binary.PutVarint(pointerOfNextBlock[0:8], (blockIndex + 1))
+		diskManager.WriteBlock(blockIndex, BLOCK_POINTER_OFFSET, pointerOfNextBlock)
+	}
+	//write final block to point to nil (-1)
+	binary.PutVarint(pointerOfNextBlock[0:8], (-1))
+	diskManager.WriteBlock(blockIndex, BLOCK_POINTER_OFFSET, pointerOfNextBlock)
+	diskManager.mountedDisk = nil
+}
+
 func (diskManager *DiskManager) CreateDisk(diskName string, diskSize int, blockSize int) {
 	diskPath := DISK_DIR + diskName
 	newFile, err := os.Create(diskPath)
@@ -104,22 +124,31 @@ func (diskManager *DiskManager) CreateDisk(diskName string, diskSize int, blockS
   }
 }
 
-func (diskManager *DiskManager) initBlockList(disk *Disk, diskPath string) {
-	diskFile, _ := os.OpenFile(diskPath, os.O_WRONLY, 0666)
-	defer diskFile.Close()
-	setDiskFilePointer(diskFile)
-	diskManager.mountedDisk = disk
-	var BLOCK_POINTER_OFFSET int64 = disk.blockSize - POINTER_SIZE
-	var blockIndex int64
-	pointerOfNextBlock := make([]byte, POINTER_SIZE)
-	for blockIndex = 1; blockIndex < disk.blockQuantity - 1; blockIndex++ {
-		binary.PutVarint(pointerOfNextBlock[0:8], (blockIndex + 1))
-		diskManager.WriteBlock(blockIndex, BLOCK_POINTER_OFFSET, pointerOfNextBlock)
+func (diskManager *DiskManager) MountDisk(diskName string) {
+	var err error
+	diskManager.mountedDFile, err = os.Open(DISK_DIR + diskName)
+	diskManager.mountedDisk = new (Disk)
+	diskManager.mountedDisk.diskName = diskName
+	diskManager.MountedDiskName = diskName
+	if err != nil {
+		log.Printf("Failed to mount disk. %s", err)
+		return
 	}
-	//write final block to point to nil (-1)
-	binary.PutVarint(pointerOfNextBlock[0:8], (-1))
-	diskManager.WriteBlock(blockIndex, BLOCK_POINTER_OFFSET, pointerOfNextBlock)
+
+	log.Printf("Disk %s mounted", diskName)
+}
+
+func (diskManager *DiskManager) UnmountDisk(diskName string) {
+	diskManager.mountedDFile.Close()
 	diskManager.mountedDisk = nil
+	diskManager.mountedDFile = nil
+	diskManager.MountedDiskName = ""
+
+	fmt.Printf("Disk %s successfully unmounted. \n", diskName)
+}
+
+func (diskManager *DiskManager) HasMountedDisk() bool{
+	return diskManager.mountedDisk != nil
 }
 
 func (disk *Disk) Seek(offset int64, whence int, diskFile *os.File){
@@ -135,6 +164,10 @@ func (disk *Disk) Write(buffer []byte, diskFile *os.File){
 	log.Printf("Bytes written in block: %d", bytesWritten)
 }
 
+func (disk *Disk) Read(buffer []byte, diskFile *os.File){
+
+}
+
 func (diskManager *DiskManager) WriteBlock(blockNumber int64, blockOffset int64, buffer []byte) {
 	offset := blockNumber * diskManager.mountedDisk.blockSize + blockOffset
 	diskFile, _ := os.OpenFile(DISK_DIR + diskManager.mountedDisk.diskName, os.O_WRONLY, 0666)
@@ -142,7 +175,6 @@ func (diskManager *DiskManager) WriteBlock(blockNumber int64, blockOffset int64,
 	diskManager.mountedDisk.Seek(offset, BEGINNING_OF_FILE, diskFile)
 	diskManager.mountedDisk.Write(buffer, diskFile)
 }
-
 
 func (diskManager *DiskManager) ReadBlock(blockNumber int64, blockOffset int64, buffer []byte) {
 	offset := blockNumber * diskManager.mountedDisk.blockSize + blockOffset
