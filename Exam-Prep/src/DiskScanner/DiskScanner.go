@@ -22,7 +22,7 @@ func (diskScanner *DiskScanner) ScanByOption(addressesArray []string, scanOption
     case 1:
       return fcfs(addressesArray, HEAD_START)
     case 2:
-      return 0//sstf(addressesArray, HEAD_START)
+      return sstf(addressesArray, HEAD_START)
     case 3:
       return 0//scan(addressesArray, HEAD_START)
     case 4:
@@ -50,6 +50,6 @@ func scan(addressesArray []string, headStart int) int {
   var currentHeadPosition int = headStart
   var newPathArray []string
   if (currentHeadPosition - LEFT_LIMIT) < (RIGHT_LIMIT - currentHeadPosition) {
-    
+
   }
 }

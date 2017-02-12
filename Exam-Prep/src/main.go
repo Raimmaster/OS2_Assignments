@@ -14,7 +14,9 @@ func testSSTF() {
 }
 
 func main() {
-	for {
+  testSSTF()
+  
+  for {
 		fmt.Print("Insert the string of addresses to seek from 0 to 199 separated by '-': ")
 		var addressesString string
 		fmt.Scanf("%s", &addressesString)

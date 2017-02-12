@@ -45,8 +45,9 @@ func sstf(addressesArray []string, headStart int) int {
 		nextRequestDif := differences[nextRequestPos]
 
 		requestValue, _ := strconv.Atoi(addressesArray[nextRequestPos])
-
-		fmt.Printf("nextRequestPos: %d nextRequestDif: %d RequestValue: %d\n", nextRequestPos, nextRequestDif, requestValue)
+		headStart = requestValue
+		fmt.Printf("Head start: %d nextRequestPos: %d nextRequestDif: %d RequestValue: %d\n",
+			headStart, nextRequestPos, nextRequestDif, requestValue)
 
 		movement += absolute(nextRequestDif)
 
