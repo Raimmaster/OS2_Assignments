@@ -6,6 +6,13 @@ import (
 	"strings"
 )
 
+func testSSTF() {
+	diskScanner := DiskScanner.New()
+	addresses := []string{"98", "183", "37", "122", "14", "124", "65", "67"}
+	totalCylinderMovement := diskScanner.ScanByOption(addresses, 2)
+	fmt.Printf("Total cylinder movement was: %d \n", totalCylinderMovement)
+}
+
 func main() {
 	for {
 		fmt.Print("Insert the string of addresses to seek from 0 to 199 separated by '-': ")
