@@ -13,7 +13,8 @@ type DiskScanner struct {
 func New() *DiskScanner {
   return &DiskScanner{}
 }
-
+const LEFT_LIMIT int = 0
+const RIGHT_LIMIT int = 199
 const HEAD_START int = 53
 
 func (diskScanner *DiskScanner) ScanByOption(addressesArray []string, scanOption int) int {
@@ -21,13 +22,13 @@ func (diskScanner *DiskScanner) ScanByOption(addressesArray []string, scanOption
     case 1:
       return fcfs(addressesArray, HEAD_START)
     case 2:
-      return sstf(addressesArray, HEAD_START)
+      return 0//sstf(addressesArray, HEAD_START)
     case 3:
-      return scan(addressesArray, HEAD_START)
+      return 0//scan(addressesArray, HEAD_START)
     case 4:
-      return cScan(addressesArray, HEAD_START)
+      return 0//cScan(addressesArray, HEAD_START)
     case 5:
-      return cLook(addressesArray, HEAD_START)
+      return 0//cLook(addressesArray, HEAD_START)
   }
   return 0
 }
@@ -42,4 +43,13 @@ func fcfs(addressesArray []string, headStart int) int {
   }
 
   return totalHeadMovement
+}
+
+func scan(addressesArray []string, headStart int) int {
+  var totalHeadMovement int =0
+  var currentHeadPosition int = headStart
+  var newPathArray []string
+  if (currentHeadPosition - LEFT_LIMIT) < (RIGHT_LIMIT - currentHeadPosition) {
+    
+  }
 }
