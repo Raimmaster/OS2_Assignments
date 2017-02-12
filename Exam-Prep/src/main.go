@@ -1,31 +1,38 @@
 package main
 
 import (
-  "fmt"
-  "strings"
-  "DiskScanner"
+	"DiskScanner"
+	"fmt"
+	"strings"
 )
 
-func main(){
-  for {
-    fmt.Print("Insert the string of addresses to seek from 0 to 199 separated by '-': ")
-    var addressesString string
-    fmt.Scanf("%s", &addressesString)
-    addressesArray := strings.Split(addressesString, "-")
-    fmt.Print("Scan Options:\n1. FCFS.\n2. SSTF.\n3. SCAN.\n4. C-SCAN.\n5.C-LOOK.\nInsert your option:")
-    var scanOption int
-    fmt.Scanf("%d", &scanOption)
+func testSSTF() {
+	diskScanner := DiskScanner.New()
+	addresses := []string{"98", "183", "37", "122", "14", "124", "65", "67"}
+	totalCylinderMovement := diskScanner.ScanByOption(addresses, 2)
+	fmt.Printf("Total cylinder movement was: %d \n", totalCylinderMovement)
+}
 
-    var diskScanner DiskScanner
-    totalCylinderMovement := diskScanner.ScanByOption(addressesArray, scanOption)
-    fmt.Printf("Total cylinder movement was: %d \n", totalCylinderMovement)
+func main() {
+	for {
+		fmt.Print("Insert the string of addresses to seek from 0 to 199 separated by '-': ")
+		var addressesString string
+		fmt.Scanf("%s", &addressesString)
+		addressesArray := strings.Split(addressesString, "-")
+		fmt.Print("Scan Options:\n1. FCFS.\n2. SSTF.\n3. SCAN.\n4. C-SCAN.\n5.C-LOOK.\nInsert your option:")
+		var scanOption int
+		fmt.Scanf("%d", &scanOption)
 
-    fmt.Print("Continue Y/N: ")
-    var continueScanning string
-    fmt.Scanf("%s", &continueScanning)
+		diskScanner := DiskScanner.New()
+		totalCylinderMovement := diskScanner.ScanByOption(addressesArray, scanOption)
+		fmt.Printf("Total cylinder movement was: %d \n", totalCylinderMovement)
 
-    if strings.ToLower(continueScanning) == "n" {
-      break;
-    }
-  }
+		fmt.Print("Continue Y/N: ")
+		var continueScanning string
+		fmt.Scanf("%s", &continueScanning)
+
+		if strings.ToLower(continueScanning) == "n" {
+			break
+		}
+	}
 }
