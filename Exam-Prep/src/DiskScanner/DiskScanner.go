@@ -17,7 +17,7 @@ func New() *DiskScanner {
 }
 const LEFT_LIMIT int = 0
 const RIGHT_LIMIT int = 199
-const HEAD_START int = 53
+const HEAD_START int = 50
 
 func (diskScanner *DiskScanner) ScanByOption(addressesArray []string, scanOption int) int {
   switch scanOption {
