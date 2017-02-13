@@ -29,25 +29,11 @@ func cScan(addressesArray []string, headStart int) int {
   index := getIndexNearTo(intAddressesArr, headStart)
   fmt.Printf("Initial index: %d \n", index)
   startIndex := index
-  // isMovingLeft := intAddressesArr[startIndex] < currentHeadPosition
   for i := 0; i < len(intAddressesArr); i++ {
     fmt.Printf("Values: %d \n", intAddressesArr[i])
   }
   for {
     newHeadPos := intAddressesArr[index]
-    // if isMovingLeft {
-    //   if newHeadPos > currentHeadPosition {
-    //     isMovingLeft = false
-    //     totalHeadMovements += currentHeadPosition
-    //     currentHeadPosition = RIGHT_LIMIT
-    //   }
-    // } else {
-    //     if newHeadPos < currentHeadPosition {
-    //       isMovingLeft = true
-    //       totalHeadMovements += int(math.Abs(float64(currentHeadPosition - RIGHT_LIMIT)))
-    //       currentHeadPosition = LEFT_LIMIT
-    //     }
-    // }
 
     totalHeadMovements += int(math.Abs(float64(newHeadPos - currentHeadPosition)))
     currentHeadPosition = newHeadPos
