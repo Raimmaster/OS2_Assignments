@@ -4,6 +4,8 @@ import (
   "math"
   "strings"
   "strconv"
+  "sort"
+  //"fmt"
 )
 
 type DiskScanner struct {
@@ -24,7 +26,7 @@ func (diskScanner *DiskScanner) ScanByOption(addressesArray []string, scanOption
     case 2:
       return 0//sstf(addressesArray, HEAD_START)
     case 3:
-      return 0//scan(addressesArray, HEAD_START)
+      return scan(addressesArray, HEAD_START)
     case 4:
       return 0//cScan(addressesArray, HEAD_START)
     case 5:
@@ -48,8 +50,43 @@ func fcfs(addressesArray []string, headStart int) int {
 func scan(addressesArray []string, headStart int) int {
   var totalHeadMovement int =0
   var currentHeadPosition int = headStart
-  var newPathArray []string
-  if (currentHeadPosition - LEFT_LIMIT) < (RIGHT_LIMIT - currentHeadPosition) {
-    
+  var newPathArray []int
+  var newEntries []int
+  for _,element := range addressesArray {
+    //fmt.Println(element)
+    value, _ := strconv.Atoi(strings.TrimSpace(element))
+    newEntries = append(newEntries, value)
   }
+  sort.Ints(newEntries)
+  if (currentHeadPosition - LEFT_LIMIT) < (RIGHT_LIMIT - currentHeadPosition) {
+    for i :=len(newEntries)-1; i>=0; i-- {
+      value := newEntries[i]
+      if(value <= currentHeadPosition){
+        newPathArray = append(newPathArray,value)
+        newEntries = append(newEntries[:i], newEntries[i+1:]...)
+      }
+    }
+    newPathArray = append(newPathArray,LEFT_LIMIT)
+    for i :=0; i< len(newEntries); i++{
+        newPathArray = append(newPathArray,newEntries[i])
+    }
+  }else{
+    for i :=0; i<len(newEntries); i++ {
+      value := newEntries[i]
+      if(value >= currentHeadPosition){
+        newPathArray = append(newPathArray,value)
+        newEntries = append(newEntries[:i], newEntries[i+1:]...)
+      }
+    }
+    newPathArray = append(newPathArray,RIGHT_LIMIT)
+    for i :=len(newEntries)-1; i>=0 ; i--{
+        newPathArray = append(newPathArray,newEntries[i])
+    }
+  }
+  for _,element := range newPathArray {
+    newHeadPos := element
+    totalHeadMovement += int(math.Abs(float64(newHeadPos - currentHeadPosition)))
+    currentHeadPosition = newHeadPos
+  }
+  return totalHeadMovement
 }
