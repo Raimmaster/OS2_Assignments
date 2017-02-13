@@ -27,14 +27,12 @@ func testCscan() {
 }
 
 func main() {
-  // testSSTF()
-	testCscan()
   for {
 		fmt.Print("Insert the string of addresses to seek from 0 to 199 separated by '-': ")
 		var addressesString string
 		fmt.Scanf("%s", &addressesString)
 		addressesArray := strings.Split(addressesString, "-")
-		fmt.Print("Scan Options:\n1. FCFS.\n2. SSTF.\n3. SCAN.\n4. C-SCAN.\n5 .C-LOOK.\nInsert your option:")
+		fmt.Print("Scan Options:\n1. FCFS.\n2. SSTF.\n3. SCAN.\n4. C-SCAN.\n5. C-LOOK.\nInsert your option:")
 		var scanOption int
 		fmt.Scanf("%d", &scanOption)
 
