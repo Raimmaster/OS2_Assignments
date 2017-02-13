@@ -3,7 +3,6 @@ package DiskScanner
 import (
   "fmt"
   "math"
-  "sort"
   "strconv"
 )
 
@@ -20,67 +19,47 @@ func stringArrayToIntArray(addressesArray []string) []int{
 }
 
 func cScan(addressesArray []string, headStart int) int {
-  var totalHeadMovement int = 0
-  isMovingLeft := true
+  var totalHeadMovements int = 0
   currentHeadPosition := headStart
-  intAddressesArr := stringArrayToIntArray(addressesArray)
-  sort.Ints(intAddressesArr)
+  addressesArray = append(addressesArray, "0")
+  addressesArray = append(addressesArray, "199")
 
-  var differencesArr [] int
+  intAddressesArr := toIntArray(addressesArray)
+
+  index := getIndexNearTo(intAddressesArr, headStart)
+  fmt.Printf("Initial index: %d \n", index)
+  startIndex := index
+  // isMovingLeft := intAddressesArr[startIndex] < currentHeadPosition
   for i := 0; i < len(intAddressesArr); i++ {
-    valueToSubstract := intAddressesArr[i]
-    distance := int(math.Abs(float64(valueToSubstract - currentHeadPosition)))
-    differencesArr = append(differencesArr, distance)
+    fmt.Printf("Values: %d \n", intAddressesArr[i])
   }
-
-  closestHeadPos := getMinAbsPos(differencesArr)
-  newHeadPosition := intAddressesArr[closestHeadPos]
-  isMovingLeft = newHeadPosition < currentHeadPosition
-
   for {
-    // fmt.Printf("Got differences: %d \n", len(differencesArr))
-    differencesArr = differencesArr[:0]
-    for i := 0; i < len(intAddressesArr); i++ {
-      valueToSubstract := intAddressesArr[i]
-      fmt.Printf("New val to add to substract: %d \n", valueToSubstract)
-      distance := int(math.Abs(float64(valueToSubstract - currentHeadPosition)))
-      fmt.Printf("New distance VAL: %d \n", distance)
-      differencesArr = append(differencesArr, distance)
-    }
+    newHeadPos := intAddressesArr[index]
+    // if isMovingLeft {
+    //   if newHeadPos > currentHeadPosition {
+    //     isMovingLeft = false
+    //     totalHeadMovements += currentHeadPosition
+    //     currentHeadPosition = RIGHT_LIMIT
+    //   }
+    // } else {
+    //     if newHeadPos < currentHeadPosition {
+    //       isMovingLeft = true
+    //       totalHeadMovements += int(math.Abs(float64(currentHeadPosition - RIGHT_LIMIT)))
+    //       currentHeadPosition = LEFT_LIMIT
+    //     }
+    // }
 
-    // closestHeadPos = getMinAbsPos(differencesArr)
-    newHeadPosition = intAddressesArr[closestHeadPos]
-    fmt.Printf("Current: %d ", currentHeadPosition)
-    var pausing int
-    fmt.Scanf("%d", &pausing)
-    if isMovingLeft {
-      // fmt.Printf("Moving left with NH: %d and CH: %d \n", newHeadPosition, currentHeadPosition)
-      if newHeadPosition > currentHeadPosition {
-        isMovingLeft = false
-        totalHeadMovement += currentHeadPosition
-        currentHeadPosition = RIGHT_LIMIT
-        continue
-      }
-    } else {
-      // fmt.Printf("Moving right with New: %d and Current: %d \n", newHeadPosition, currentHeadPosition)
-      if newHeadPosition < currentHeadPosition {
-        isMovingLeft = true
-        totalHeadMovement += int(math.Abs(float64(currentHeadPosition - RIGHT_LIMIT)))
-        currentHeadPosition = LEFT_LIMIT
-        continue
-      }
-    }
+    totalHeadMovements += int(math.Abs(float64(newHeadPos - currentHeadPosition)))
+    currentHeadPosition = newHeadPos
 
-    totalHeadMovement += differencesArr[closestHeadPos]
-    currentHeadPosition = newHeadPosition
-    intAddressesArr = removeIntIndex(intAddressesArr, closestHeadPos)
+    index = (index + 1)%len(intAddressesArr)
+    fmt.Printf("Index: %d \n", index)
 
-    fmt.Printf("Current int arr length: %d \n", len(intAddressesArr))
-    if len(intAddressesArr) == 0 {
+    if index == startIndex {
+      totalHeadMovements -= int(math.Abs(float64(intAddressesArr[0] - intAddressesArr[len(intAddressesArr)-1])))
       break
     }
-
   }
 
-  return totalHeadMovement
+  return totalHeadMovements
 }

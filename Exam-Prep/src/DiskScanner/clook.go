@@ -20,15 +20,15 @@ func cLook(addressesArray []string, headStart int) int {
 	fmt.Println(startedAt)
 	for {
 		newHeadPos := intIndexes[i]
-    	totalHeadMovements += int(math.Abs(float64(newHeadPos - currentHeadPosition)))
-    	currentHeadPosition = newHeadPos
+    totalHeadMovements += int(math.Abs(float64(newHeadPos - currentHeadPosition)))
+    currentHeadPosition = newHeadPos
 
-    	i = (i+1)%len(intIndexes)
-    	fmt.Println(i)
-    	if i == startedAt {
-    		totalHeadMovements -= int(math.Abs(float64(intIndexes[0] - intIndexes[len(intIndexes)-1])))
-    		break
-    	}
+    i = (i+1)%len(intIndexes)
+    fmt.Println(i)
+    if i == startedAt {
+    	totalHeadMovements -= int(math.Abs(float64(intIndexes[0] - intIndexes[len(intIndexes)-1])))
+    	break
+    }
 	}
 
 
@@ -48,7 +48,7 @@ func reverseInts(input []int) []int {
     if len(input) == 0 {
         return input
     }
-    return append(reverseInts(input[1:]), input[0]) 
+    return append(reverseInts(input[1:]), input[0])
 }
 
 func getIndexNearTo(add []int, headStart int) int {
