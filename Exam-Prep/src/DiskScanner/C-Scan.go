@@ -48,7 +48,7 @@ func cScan(addressesArray []string, headStart int) int {
       differencesArr = append(differencesArr, distance)
     }
 
-    closestHeadPos = getMinAbsPos(differencesArr)
+    // closestHeadPos = getMinAbsPos(differencesArr)
     newHeadPosition = intAddressesArr[closestHeadPos]
     fmt.Printf("Current: %d ", currentHeadPosition)
     var pausing int
