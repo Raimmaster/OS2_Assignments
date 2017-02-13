@@ -26,7 +26,7 @@ func (diskScanner *DiskScanner) ScanByOption(addressesArray []string, scanOption
     case 3:
       return 0//scan(addressesArray, HEAD_START)
     case 4:
-      return 0//cScan(addressesArray, HEAD_START)
+      return cScan(addressesArray, HEAD_START)
     case 5:
       return 0//cLook(addressesArray, HEAD_START)
   }
