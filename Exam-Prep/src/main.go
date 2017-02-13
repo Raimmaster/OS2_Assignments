@@ -12,6 +12,12 @@ func testSSTF() {
 	totalCylinderMovement := diskScanner.ScanByOption(addresses, 2)
 	fmt.Printf("Total cylinder movement was: %d \n", totalCylinderMovement)
 }
+func testCLook() {
+	diskScanner := DiskScanner.New()
+	addresses := []string{"11","34","50","62","64","95","119","123","180"}
+	totalCylinderMovement := diskScanner.ScanByOption(addresses, 5)
+	fmt.Printf("Total cylinder movement was: %d \n", totalCylinderMovement)
+}
 
 func testCscan() {
 	diskScanner := DiskScanner.New()
@@ -28,7 +34,7 @@ func main() {
 		var addressesString string
 		fmt.Scanf("%s", &addressesString)
 		addressesArray := strings.Split(addressesString, "-")
-		fmt.Print("Scan Options:\n1. FCFS.\n2. SSTF.\n3. SCAN.\n4. C-SCAN.\n5. C-LOOK.\nInsert your option:")
+		fmt.Print("Scan Options:\n1. FCFS.\n2. SSTF.\n3. SCAN.\n4. C-SCAN.\n5 .C-LOOK.\nInsert your option:")
 		var scanOption int
 		fmt.Scanf("%d", &scanOption)
 
