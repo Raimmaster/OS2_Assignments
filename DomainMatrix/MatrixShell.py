@@ -2,15 +2,18 @@ import os
 import sys
 import cmd
 import signal
+from Matrix import Matrix
 
 class MatrixShell(cmd.Cmd):
     intro = 'Welcome to the access matrix shell.\tType help or ? to list commands.\n'
-    prompt = '(admin) '
-    file = None
+    Matrix = Matrix()
+    prompt = '%s ' % Matrix.get_current_domain()
 
     # ----- basic turtle commands -----
-    def do_su(self, arg):
+    def do_su(self, name):
         'Set the current domain: su D1'
+        print ("Domain name received: %s" % name)
+        Matrix.set_current_domain(arg);
     def do_whoami(self, arg):
         'Show the current domain name'
     def do_create_domain(self, arg):
