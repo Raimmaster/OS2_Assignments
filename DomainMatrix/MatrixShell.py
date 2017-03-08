@@ -26,12 +26,16 @@ class MatrixShell(cmd.Cmd):
     
     def do_delete_domain(self, arg):
         'Delete a domain: delete_domain D1'
+        self.matrix.delete_domain(arg)
     
     def do_delete_object(self, arg):
         'Delete an object: delete_object F1'
+        self.matrix.delete_object(arg)
     
     def do_set_access_right(self, arg):
-        'Set a domain/object access right: set_access_right read'
+        'Set a domain/object access right: set_access_right target_domain target_object right_name switchable'
+        target_domain, target_object, right, switchable  = arg.split()
+        self.matrix.set_access_right(target_domain, target_object, right, switchable)
     
     def do_rm_access_right(self, arg):
         'Remove a domain/object access right: rm_access_right read'
@@ -44,6 +48,8 @@ class MatrixShell(cmd.Cmd):
     
     def do_exit(self, arg):
         'Return to previous domain: exit'
+        self.matrix.exit()
+        self.prompt = '(%s)>' % self.matrix.get_current_domain().name
     
     def do_quit(self, arg):
         'Exit from the program  '
