@@ -38,14 +38,18 @@ class MatrixShell(cmd.Cmd):
         self.matrix.set_access_right(target_domain, target_object, right, switchable)
     
     def do_rm_access_right(self, arg):
-        'Remove a domain/object access right: rm_access_right read'
+        'Remove a domain/object access right: rm_access_right target_domain target_object right_name'
+        target_domain, target_object, right = arg.split()
+        self.matrix.rm_access_right(target_domain, target_object, right)
     
     def do_verify_access_right(self, arg):
         "Verify a domain's access right, and get the objects where it can use it: verify_access_right read"
         self.matrix.verify_access_right(arg)
-        
+
     def do_switch(self, arg):
-        'Switch to another domain, if allowed: switch'
+        'Switch to another domain, if allowed: switch target_domain'
+        self.matrix.switch(target_domain)
+        self.prompt = '(%s)>' % self.matrix.get_current_domain().name
     
     def do_exit(self, arg):
         'Return to previous domain: exit'
