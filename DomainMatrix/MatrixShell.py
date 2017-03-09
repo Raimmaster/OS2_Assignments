@@ -21,8 +21,8 @@ class MatrixShell(cmd.Cmd):
     def do_create_object(self, arg):
         'Create an object: create_object F1'
         objeto = self.matrix.create_object(arg, self.matrix.get_current_domain())
-        print('%s' % objeto.name)
-        self.matrix.get_current_domain().print_current_objects()
+        #print('%s' % objeto.name)
+        #self.matrix.get_current_domain().print_current_objects()
     
     def do_delete_domain(self, arg):
         'Delete a domain: delete_domain D1'
@@ -56,6 +56,14 @@ class MatrixShell(cmd.Cmd):
         self.matrix.exit()
         self.prompt = '(%s)>' % self.matrix.get_current_domain().name
     
+    def do_print_domains_objects(self, arg):
+        'Prints every domain and its respective objects with rights'
+        self.matrix.print_domains_and_objects()
+
+    def do_print_objects(self, arg):
+        'Prints all objects in matrix'
+        self.matrix.print_objects()
+
     def do_quit(self, arg):
         'Exit from the program  '
         quit()

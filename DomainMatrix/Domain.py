@@ -11,8 +11,8 @@ class Domain:
 	def add_right_to_object(self, focus_object, right, switchable):
 		tuple_in_list = self.search_object_in_list(focus_object)
 		new_right = Right(right, switchable)
-		print('Adding right %s' % new_right.name)
-		print('Right switch: %r' % new_right.switchable)
+		#print('Adding right %s' % new_right.name)
+		#print('Right switch: %r' % new_right.switchable)
 		if tuple_in_list is not None:
 			rights_array = tuple_in_list[1]
 			right_exists = len(list(filter(lambda tup_right: tup_right.name == right, rights_array))) > 0
@@ -34,7 +34,7 @@ class Domain:
 		for obj_right_tuple in self.object_rights_tuple_list:
 			print('Object: %s' % obj_right_tuple[0].name)
 			for right in obj_right_tuple[1]:
-				print('With rights: %s' % right.name)
+				print('With rights: %s, switchable %r' % (right.name, right.switchable))
 
 	def delete_object_from_tuples_array(self, object_to_delete):
 		for obj_right_tuple in object_rights_tuple_list:

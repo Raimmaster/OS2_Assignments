@@ -105,7 +105,7 @@ class Matrix:
 		has_control = self.current_domain.has_right_of_object(domain, 'control')
 		if(is_owner or has_control):
 			domain.remove_right_from_object(objeto, right)
-
+    
 	def switch(self, target_domain):
 		object_right_list = self.verify_access_right('switch')
 		if len(object_right_list) > 0:
@@ -117,3 +117,12 @@ class Matrix:
 		else:
 			print('You have no right switch for that domain')
     			
+	def print_domains_and_objects(self):
+		for domain in self.domains:
+			print("Domain: %s" % domain.name)
+			print("Its objects: ")
+			domain.print_current_objects()
+	
+	def print_objects(self):
+		for objeto in self.objects:
+			print("Object: %s" % objeto.name)
