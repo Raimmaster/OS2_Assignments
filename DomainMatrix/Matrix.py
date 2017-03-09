@@ -77,8 +77,8 @@ class Matrix:
     	for domain in self.domains:
     		domain.delete_object_from_tuples_array(object_to_delete)
 
-    def print_objects(self):
-    	for objeto in self.objects:
+    def print_objects(self, object_list):
+    	for objeto in object_list:
     		print(objeto.name)
 
     def set_access_right(self, target_domain, target_object_name, right, switchable):
@@ -89,3 +89,8 @@ class Matrix:
 
         if is_owner or has_control:
             domain.add_right_to_object(objeto, right, switchable == 'true')
+
+    def verify_access_right(self, right):
+    	objects = self.current_domain.get_objects_with_right(right)
+    	self.print_objects(objects)
+    	return objects

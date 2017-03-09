@@ -41,16 +41,20 @@ class Domain:
 
     def has_right_of_object(self, target_object, right_to_filter):
         obj, rights = self.search_object_in_list(target_object)
-        rights_filtered_list = list(filter(lambda x: x.name == right_to_filter, rights))
+        rights_filtered_list = list(filter(lambda right: right.name == right_to_filter, rights))
         return len(rights_filtered_list) > 0
-        
-    def has_control_of_domain(self, target_domain):
-        obj, rights = self.search_object_in_list(target_domain)
-        control_right = 'control'
-        print("Domain name %s" % target_domain.name)
-        
-        if control_right in rights:
-            return True
 
-        print(control_right)
-        return False
+    def get_objects_with_right(self, right):
+    	objects_tuple_list = list(
+    		filter(
+    			lambda obj_right_tuple: len(
+    				list(
+    					filter(
+    						lambda tuple_right: tuple_right.name == right, obj_right_tuple[1]))) > 0,
+    			self.object_rights_tuple_list))
+
+    	objects = []
+    	for obj_right_tuple in objects_tuple_list:
+    		objects.append(obj_right_tuple[0])
+
+    	return objects
