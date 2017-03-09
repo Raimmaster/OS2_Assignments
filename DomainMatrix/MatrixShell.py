@@ -48,7 +48,7 @@ class MatrixShell(cmd.Cmd):
 
     def do_switch(self, arg):
         'Switch to another domain, if allowed: switch target_domain'
-        self.matrix.switch(target_domain)
+        self.matrix.switch(arg)
         self.prompt = '(%s)>' % self.matrix.get_current_domain().name
     
     def do_exit(self, arg):

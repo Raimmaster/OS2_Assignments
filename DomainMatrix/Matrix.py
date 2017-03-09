@@ -108,7 +108,7 @@ class Matrix:
 
 	def switch(self, target_domain):
 		object_right_list = self.verify_access_right('switch')
-		if len(can_switch) > 0:
+		if len(object_right_list) > 0:
 			domain = self.search_domain(target_domain)
 			if domain in object_right_list:
 				self.set_current_domain(target_domain)

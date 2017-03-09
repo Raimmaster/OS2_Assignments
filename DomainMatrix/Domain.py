@@ -69,9 +69,9 @@ class Domain:
 	def get_rights_from_past_domain(self):
 		switchable_rights = self.past_domain.get_switchable_rights()
 		for switch_tuple in switchable_rights:
-			objeto, rights = switchable_rights
+			objeto, rights = switch_tuple
 			for right in rights:
-				self.add_right_to_object(objeto.name, right.name, False)
+				self.add_right_to_object(objeto, right.name, False)
 
 		self.inherited_rights_tuple_list = switchable_rights
 
@@ -88,10 +88,10 @@ class Domain:
 				obj_right_tuple = (objeto, rights_array)
 				switchable_rights.append(obj_right_tuple)
 
-		return switchable_right
+		return switchable_rights
 
 	def remove_inherited_rights(self):
-		for obj_right_tuple in inherited_rights_tuple_list:
+		for obj_right_tuple in self.inherited_rights_tuple_list:
 			objeto, rights = obj_right_tuple
 			for right in rights:
 				self.remove_right_from_object(objeto, right.name)
