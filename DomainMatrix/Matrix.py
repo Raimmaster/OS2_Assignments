@@ -82,14 +82,10 @@ class Matrix:
     		print(objeto.name)
 
     def set_access_right(self, target_domain, target_object_name, right, switchable):
-    	domain = self.search_domain(target_domain)
-    	objeto = self.search_object(target_object_name)
+        domain = self.search_domain(target_domain)
+        objeto = self.search_object(target_object_name)
+        is_owner = self.current_domain.has_right_of_object(objeto, 'owner')
+        has_control = self.current_domain.has_right_of_object(domain, 'control')
 
-    	is_owner = self.current_domain.is_owner_of_object(objeto)
-    	has_control = self.current_domain.has_control_of_domain(domain)
-
-    	print('%r' % is_owner)
-    	print('%r' % has_control)
-
-    	if is_owner or has_control:
-    		target_domain.add_right_to_object(objeto, right, switchable == 'true')  
+        if is_owner or has_control:
+            domain.add_right_to_object(objeto, right, switchable == 'true')

@@ -6,11 +6,11 @@ class Domain:
         self.past_domain = None
         self.object_type = 'DOMAIN'
 
-
     def add_right_to_object(self, focus_object, right, switchable):
         tuple_in_list = self.search_object_in_list(focus_object)
         new_right = Right(right, switchable)
-        print('Adding right %s' % right)
+        print('Adding right %s' % new_right.name)
+        print('Right switch: %r' % new_right.switchable)
         if tuple_in_list is not None:
             rights_array = tuple_in_list[1]
             rights_array.append(new_right)
@@ -39,18 +39,18 @@ class Domain:
     			object_rights_tuple_list.remove(obj_right_tuple)
     			print("Object removed from tuple list")
 
-    def is_owner_of_object(self, target_object):
-    	obj, rights = self.search_object_in_list(target_object)
-    	owner_right = 'owner'
-    	if owner_right in rights:
-    		return True
-
-    	return False
-
+    def has_right_of_object(self, target_object, right_to_filter):
+        obj, rights = self.search_object_in_list(target_object)
+        rights_filtered_list = list(filter(lambda x: x.name == right_to_filter, rights))
+        return len(rights_filtered_list) > 0
+        
     def has_control_of_domain(self, target_domain):
-    	obj, rights = self.search_object_in_list(target_domain)
-    	control_right = 'control'
-    	if control_right in rights:
-    		return True
+        obj, rights = self.search_object_in_list(target_domain)
+        control_right = 'control'
+        print("Domain name %s" % target_domain.name)
+        
+        if control_right in rights:
+            return True
 
-    	return False
+        print(control_right)
+        return False
