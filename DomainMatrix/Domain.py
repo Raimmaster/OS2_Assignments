@@ -47,6 +47,10 @@ class Domain:
 		if target_object is self:
 			return True
 
+		if self.search_object_in_list(target_object) is None:
+			print('Domain has no rights')
+			return False
+
 		obj, rights = self.search_object_in_list(target_object)
 		rights_filtered_list = list(filter(lambda right: right.name == right_to_filter, rights))
 		return len(rights_filtered_list) > 0

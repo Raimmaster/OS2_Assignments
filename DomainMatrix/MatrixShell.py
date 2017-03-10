@@ -62,7 +62,7 @@ class MatrixShell(cmd.Cmd):
 
     def do_print_objects(self, arg):
         'Prints all objects in matrix'
-        self.matrix.print_objects()
+        self.matrix.print_objects_()
 
     def do_quit(self, arg):
         'Exit from the program  '

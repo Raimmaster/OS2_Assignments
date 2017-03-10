@@ -89,13 +89,17 @@ class Matrix:
 		objeto = self.search_object(target_object_name)
 		is_owner = self.current_domain.has_right_of_object(objeto, 'owner')
 		has_control = self.current_domain.has_right_of_object(domain, 'control')
+		if(target_domain == self.current_domain.name):
+			has_control = False
+		print("Bool: %r %r" % (is_owner, has_control))
 
 		if is_owner or has_control:
 			domain.add_right_to_object(objeto, right, switchable == 'true')
 
 	def verify_access_right(self, right):
 		objects = self.current_domain.get_objects_with_right(right)
-		self.print_objects(objects)
+		if objects is not None:
+			self.print_objects(objects)
 		return objects
 
 	def rm_access_right(self, target_domain, target_object, right):
@@ -123,6 +127,6 @@ class Matrix:
 			print("Its objects: ")
 			domain.print_current_objects()
 	
-	def print_objects(self):
+	def print_objects_(self):
 		for objeto in self.objects:
 			print("Object: %s" % objeto.name)
